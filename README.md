@@ -34,3 +34,8 @@ Make sure you have Node.js installed before proceeding. You can download and ins
 3. scan qr that's showed on terminal
 4. great !! sticker bot has activated on your whatsapp account
 5. now your friend can use command  <span style='font-weight: 800;'>'.sticker'</span>   on capion of pic
+
+## New function !
+
+Now you can revert your sticker into media!
+Use command .image to revert your stiker into media
