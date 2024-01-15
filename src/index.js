@@ -2,7 +2,6 @@ const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const moment = require("moment-timezone");
 const colors = require("colors");
-const ytdl = require("ytdl-core"); // Add this line to import the ytdl-core package
 
 const client = new Client({
   restartOnAuthFail: true,
@@ -18,8 +17,8 @@ const client = new Client({
   authStrategy: new LocalAuth({ clientId: "client" }),
 });
 const config = {
-  name: "jomokStickerBot",
-  author: "alfin",
+  name: "Jomok Sticker Bot v2",
+  author: "Hanzou",
   prefix: ".",
   timezone: "Asia/Jakarta",
   groups: true,
@@ -46,11 +45,12 @@ client.on("message", async (message) => {
   const isGroups = message.from.endsWith("@g.us") ? true : false;
   if ((isGroups && config.groups) || !isGroups) {
     const isStickerCommand = message.body.startsWith(`${config.prefix}sticker`);
-    const isYoutubeCommand = message.body.startsWith(`${config.prefix}youtube`);
+
+    const isReimgCommand = message.body.startsWith(`${config.prefix}image`);
 
     const hasMedia = message.hasMedia;
     const hasCaptionStickerCommand =
-      message._data.caption === `${config.prefix}sticker`;
+      message._data.caption == `${config.prefix}sticker`;
 
     if ((hasMedia || hasCaptionStickerCommand) && !isStickerCommand) {
       return;
@@ -65,7 +65,7 @@ client.on("message", async (message) => {
       ) {
         try {
           const media = await message.downloadMedia();
-          client.sendMessage(message.from, "*[⏳]* bentar..");
+          client.sendMessage(message.from, "*[⏳]* sek..");
           client
             .sendMessage(message.from, media, {
               sendMediaAsSticker: true,
@@ -73,15 +73,15 @@ client.on("message", async (message) => {
               stickerAuthor: config.author,
             })
             .then(() => {
-              client.sendMessage(message.from, "*[✅]* nih stickernya tod!");
+              client.sendMessage(message.from, "*[✅]* Your Sticker!");
             });
         } catch {
-          client.sendMessage(message.from, "*[🔴]* error!");
+          client.sendMessage(message.from, "*[🔴]* Error!");
         }
       } else if (message.body == `${config.prefix}sticker`) {
         const quotedMsg = await message.getQuotedMessage();
         if (message.hasQuotedMsg && quotedMsg.hasMedia) {
-          client.sendMessage(message.from, "*[⏳]* bentar..");
+          client.sendMessage(message.from, "*[⏳]* sek..");
           try {
             const media = await quotedMsg.downloadMedia();
             client
@@ -91,51 +91,50 @@ client.on("message", async (message) => {
                 stickerAuthor: config.author,
               })
               .then(() => {
-                client.sendMessage(message.from, "*[✅]* nih stickernya tod!");
+                client.sendMessage(message.from, "*[✅]* Your Sticker!");
               });
           } catch {
-            client.sendMessage(message.from, "*[🔴]* error!");
+            client.sendMessage(message.from, "*[🔴]* Error!");
           }
         } else {
-          client.sendMessage(message.from, "*[❎]* Reply Image First!");
+          client.sendMessage(message.from, "*[❎]* Where's your media?!");
         }
       } else if (message.type == "sticker") {
-        client.sendMessage(message.from, "*[⏳]* bentar..");
+        client.sendMessage(message.from, "*[⏳]* Wait..");
         try {
           const media = await message.downloadMedia();
           client.sendMessage(message.from, media).then(() => {
-            client.sendMessage(message.from, "*[✅]* nih stickernya tod!");
+            client.sendMessage(message.from, "*[✅]* Your Sticker!");
           });
         } catch {
-          client.sendMessage(message.from, "*[🔴]* error!");
+          client.sendMessage(message.from, "*[🔴]* Error!");
         }
-      } else if (message.body == `${config.prefix}image`) {
-        const quotedMsg = await message.getQuotedMessage();
-        if (message.hasQuotedMsg && quotedMsg.hasMedia) {
-          client.sendMessage(message.from, "*[⏳]* bentar..");
-          try {
-            const media = await quotedMsg.downloadMedia();
-            client
-              .sendMessage(message.from, media, {
-                caption: "nih gambarnya tod!",
-                sendMediaAsDocument: true,
-              })
-              .then(() => {
-                client.sendMessage(message.from, "*[✅]* nih gambarnya tod!");
-              });
-          } catch {
-            client.sendMessage(message.from, "*[🔴]* error!");
-          }
-        } else {
-          client.sendMessage(message.from, "*[❎]* Reply Sticker First!");
-        }
-      }
+      } } else if (isReimgCommand) {
+  const quotedMsg = await message.getQuotedMessage();
+  if (quotedMsg && quotedMsg.type === "sticker" || quotedMsg.type === "image" || quotedMsg.type === "video" || quotedMsg.type === "gif") {
+    client.sendMessage(message.from, "*[⏳]* Wait..");
+    try {
+      const media = await quotedMsg.downloadMedia();
+      await client.sendMessage(message.from, media, {
+        caption: "Bingo!",
+        //sendMediaAsDocument: true,
+        //sendMediaAsImage: true,
+        //sendMediaAsVideo: true,
+      });
+      client.sendMessage(message.from, "*[✅]* Your Image!");
+    } catch (error) {
+      console.error(error);
+      client.sendMessage(message.from, "*[🔴]* Error!");
+    }
+  } else {
+    client.sendMessage(message.from, "*[❎]* Where's your sticker?!");
+  }
+}
     } else {
       client.getChatById(message.id.remote).then(async (chat) => {
         await chat.sendSeen();
       });
     }
-  }
 });
 
 client.initialize();
