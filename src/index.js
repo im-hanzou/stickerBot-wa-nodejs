@@ -65,7 +65,7 @@ client.on("message", async (message) => {
       ) {
         try {
           const media = await message.downloadMedia();
-          client.sendMessage(message.from, "*[⏳]* sek..");
+          client.sendMessage(message.from, "*[⏳]* Wait..");
           client
             .sendMessage(message.from, media, {
               sendMediaAsSticker: true,
@@ -81,7 +81,7 @@ client.on("message", async (message) => {
       } else if (message.body == `${config.prefix}sticker`) {
         const quotedMsg = await message.getQuotedMessage();
         if (message.hasQuotedMsg && quotedMsg.hasMedia) {
-          client.sendMessage(message.from, "*[⏳]* sek..");
+          client.sendMessage(message.from, "*[⏳]* Wait..");
           try {
             const media = await quotedMsg.downloadMedia();
             client
