@@ -111,7 +111,7 @@ client.on("message", async (message) => {
         }
       } } else if (isReimgCommand) {
   const quotedMsg = await message.getQuotedMessage();
-  if (quotedMsg && quotedMsg.type === "sticker" || quotedMsg.type === "image" || quotedMsg.type === "video" || quotedMsg.type === "gif") {
+  if (quotedMsg && quotedMsg.type === "sticker") {
     client.sendMessage(message.from, "*[⏳]* Wait..");
     try {
       const media = await quotedMsg.downloadMedia();
